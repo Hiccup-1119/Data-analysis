@@ -29,6 +29,8 @@ app.layout = html.Div([
     dcc.Graph(id='covid-graph')
 ])
 
+k = 4
+
 # Callback to update the graph based on the selected country
 @app.callback(
     dash.dependencies.Output('covid-graph', 'figure'),

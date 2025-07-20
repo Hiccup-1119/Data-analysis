@@ -30,7 +30,7 @@ app.layout = html.Div([
 ])
 
 k = 4
-
+l = k + 4
 
 # Callback to update the graph based on the selected country
 @app.callback(

@@ -1,64 +1,23 @@
-import dash
-from dash import dcc, html
-import plotly.express as px
-import requests
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
-# Initialize Dash app
-app = dash.Dash(__name__)
+# Create DataFrame
+data = {
+    'Month': ['Jan', 'Feb', 'Mar', 'Apr'],
+    'Sales': [200, 250, 300, 400]
+}
+df = pd.DataFrame(data)
 
-# Fetch data for a given country
-def get_country_data(country):
-    url = f'https://disease.sh/v3/covid-19/countries/{country}'
-    response = requests.get(url)
-    return response.json()
+print(df)
+# Add a NumPy-calculated column (e.g., 10% bonus)
+df['Bonus'] = np.array(df['Sales']) * 0.10
 
-# Layout for the dashboard
-app.layout = html.Div([
-    dcc.Dropdown(
-        id='country-dropdown',
-        options=[
-            {'label': 'USA', 'value': 'USA'},
-            {'label': 'India', 'value': 'India'},
-            {'label': 'Brazil', 'value': 'Brazil'},
-            {'label': 'Russia', 'value': 'Russia'}
-        ],
-        value='USA',
-        style={'width': '50%'}
-    ),
-    dcc.Graph(id='covid-graph')
-])
-
-k = 4
-l = k + 4
-
-# Callback to update the graph based on the selected country
-@app.callback(
-    dash.dependencies.Output('covid-graph', 'figure'),
-    [dash.dependencies.Input('country-dropdown', 'value')]
-)
-def update_graph(selected_country):
-    data = get_country_data(selected_country)
-    country_data = {
-        'Category': ['Cases', 'Deaths', 'Recovered'],
-        'Count': [data['cases'], data['deaths'], data['recovered']]
-    }
-    df_plot = pd.DataFrame(country_data)
-    
-    # Plotly bar chart
-    fig = px.bar(df_plot, x='Category', y='Count', title=f"COVID-19 Overview in {selected_country}")
-    return fig
-
-if __name__ == '__main__':
-    app.run(debug=False, port = 8051)
-
-# from flask import Flask
-
-# app = Flask(__name__)
-
-# @app.route('/')
-# def hello():
-#     return "Hello, World!"
-
-# if __name__ == '__main__':
-#     app.run(debug=False)
+# Plot
+plt.bar(df['Month'], df['Sales'], color='skyblue', label='Sales')
+plt.plot(df['Month'], df['Bonus'], color='red', marker='o', label='Bonus')
+plt.title('Monthly Sales and Bonus')
+plt.xlabel('Month')
+plt.ylabel('Amount')
+plt.legend()
+plt.show()
